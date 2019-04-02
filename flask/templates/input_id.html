@@ -47,6 +47,32 @@
         font-size: 14px;
         border-radius: 4px;
     }
+    
+    .el-button:hover {
+        background: #66b1ff;
+        border-color: #66b1ff;
+        color: #fff;
+    }
+    
+    h2 {
+        margin: 0
+    }
+    
+    .text_center {
+        text-align: center;
+    }
+    
+    .margin_left {
+        margin-left: 10px;
+    }
+    
+    .font_34 {
+        font-size: 34px
+    }
+    
+    .font_30 {
+        font-size: 30px
+    }
 </style>
 <div id="app">
     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
@@ -54,17 +80,27 @@
             <h2>在线肿瘤诊断系统</h2>
         </el-menu-item>
     </el-menu>
-    <form name="input_id" action="/input_id/" method="post">
-        输入id:
-        <input type="text" name="txt_id" class="el-input__inner" />
-        <input type="submit" value="提交" @click='showimg = true' class="el-button " />
-    </form>
+    <br>
+    <br>
+    <el-row>
+        <el-col :sapn='12' class="text_center">
+            <form name="input_id" action="/input_id/" method="post" class="text_center">
+                输入id:
+                <input type="text" name="txt_id" class="el-input__inner margin_left" />
+                <input type="submit" value="提交" @click='showimg = true' class="el-button margin_left" />
+            </form>
+        </el-col>
+        <el-col :sapn='12' class="text_center">
+            <p v-if='showimg'><strong class="font_34">{{ pred }}%可能性为恶性肿瘤</strong></p>
+        </el-col>
+    </el-row>
+    <br>
+    <br>
     <div v-if='showimg'>
-        <p>肝癌概率为：{{ pred }}</p>
         <table style="width:100%">
             <tr>
-                <th>CT图</th>
-                <th>热图</th>
+                <th class="font_30">CT影像</th>
+                <th class="font_30">判断依据</th>
             </tr>
             {% for filename in filenames %}
             <tr>
