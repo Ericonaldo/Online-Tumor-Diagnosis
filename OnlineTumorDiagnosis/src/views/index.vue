@@ -71,6 +71,12 @@
             <el-col :span="6">
               <img src="../assets/logo.png" alt>
             </el-col>
+            <el-col :span="6">
+              <img src="../assets/logo.png" alt>
+            </el-col>
+            <el-col :span="6">
+              <img src="../assets/logo.png" alt>
+            </el-col>
     </el-row>
   </div>
 </template>
