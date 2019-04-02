@@ -28,6 +28,12 @@ def create_uuid():
         randomNum = str(0) + str(randomNum)
     uniqueNum = str(nowTime) + str(randomNum)
     return uniqueNum
+def test():
+    arr = ['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg']
+    urls = []
+    for item in arr:
+        urls.append('http://127.0.0.1:8080/show/'+item)
+    return jsonify({'data':urls})
 # 上传文件
 @app.route('/up_photo', methods=['POST'], strict_slashes=False)
 def api_upload():
