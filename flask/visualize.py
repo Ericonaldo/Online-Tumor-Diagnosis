@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Response, request, redirect, url_for, send_file
+from flask import Flask, render_template, Response, request, redirect, url_for, send_file,jsonify
 from flask_wtf import Form
 from wtforms import StringField
 from wtforms.validators import DataRequired
@@ -122,9 +122,44 @@ def plot(_id):
         hm_resized = resize(hm.numpy(), (320, 400))
         hm_resized = (hm_resized - hm_resized.min()) / (hm_resized.max() - hm_resized.min())
         skimage.io.imsave(f'./static/{filename}_hm.jpg', hm_resized, quality=90)
+    pred = float(pred)
     pred = '%.2f' % pred*100
     return render_template('input_id.html', filenames=filenames, pred=pred)
+@app.route('/get_result',methods=['POST'])
+def get_result():
+    _id = request.request.form['_id']
+    # delete images
+    for p in Path('./static/').glob('*.jpg'):
+        os.remove(p)
+    # generate images
+    filename = f'/mnt/bak/ga/train2/{_id}_2.npy'
+    xb, _ = data.one_item(open_npy(None, filename))
+    xb_im = Image(data.denorm(xb)[0])
+    xb = xb.cuda()
+    yb = Tensor([1]).cuda()  # 如果是gracam，这里要改成真实的标签
+    pred = learn.pred_batch(DatasetType.Valid, (xb, yb)).numpy()[0, 1]
+    
+    imgs = np.load(filename)
+    filenames = get_filenames_org(_id)
+    for img, filename in zip(imgs, filenames):
+        PIL.Image.fromarray(img).save(f'./static/{filename}.jpg', 'JPEG', quality=90)
+    def hooked_backward(cat):
+        with hook_output(m.neck) as hook_a: 
+            with hook_output(m.neck, grad=True) as hook_g:
+                preds = m(xb)
+                preds[0,int(cat)].backward()
+        return hook_a,hook_g
 
+    hook_a,hook_g = hooked_backward(1)  # 如果是gracam，这里要改成真实的标签
+    acts = hook_a.stored[0].cpu()
+    for i, filename in enumerate(filenames):
+        hm = acts[i*512:(i+1)*512].mean(0)
+        hm_resized = resize(hm.numpy(), (320, 400))
+        hm_resized = (hm_resized - hm_resized.min()) / (hm_resized.max() - hm_resized.min())
+        skimage.io.imsave(f'./static/{filename}_hm.jpg', hm_resized, quality=90)
+    pred = float(pred)
+    pred = '%.2f' % pred*100
+    return jsonify({'data':{'filenames':filenames,'pred':pred}})
 def get_filenames_org(_id):
     return [f'{_id}_{i}' for i in range(21)]
 
