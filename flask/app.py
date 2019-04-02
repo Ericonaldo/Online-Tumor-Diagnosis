@@ -192,7 +192,7 @@ def show_photo(filename):
 
 def input_process(dcm_dir, dcm_name):
     # read dcm
-    dcm = dicom.read_file(dcm_dir+dcm+name)
+    dcm = dicom.read_file(dcm_dir+dcm_name)
     # TODO here shold be pre process codes
     # TODO here should be codes that does inference
     xb_im = Image(img)
