@@ -161,12 +161,34 @@ def get_result():
     pred = '%.2f' % pred*100
     return jsonify({'data':{'filenames':filenames,'pred':pred}})
 @app.route('/threshold_heatmap',methods=['POST'])
-def threshold_heatmap(_id, imgs, acts, threshold):
+def threshold_heatmap():
+        # delete images
     _id = request.request.form['_id']
-    imgs = request.request.form['imgs']
-    acts = request.request.form['acts']
     threshold = request.request.form['threshold']
-    filenames = get_filenames_org(_id)
+    for p in Path('./static/').glob('*.jpg'):
+        os.remove(p)
+    # generate images
+    filename = f'/mnt/bak/ga/train2/{_id}_2.npy'
+    xb, _ = data.one_item(open_npy(None, filename))
+    xb_im = Image(data.denorm(xb)[0])
+    xb = xb.cuda()
+    yb = Tensor([1]).cuda()  # 如果是gracam，这里要改成真实的标签
+    pred = learn.pred_batch(DatasetType.Valid, (xb, yb)).numpy()[0, 1]
+    
+    imgs = np.load(filename)
+    filenames = get_filenames(_id)
+    for img, filename in zip(imgs, filenames):
+        PIL.Image.fromarray(img).save(f'./static/{filename}.jpg', 'JPEG', quality=90)
+    def hooked_backward(cat):
+        with hook_output(m.neck) as hook_a: 
+            with hook_output(m.neck, grad=True) as hook_g:
+                preds = m(xb)
+                preds[0,int(cat)].backward()
+        return hook_a,hook_g
+
+    hook_a,hook_g = hooked_backward(1)  # 如果是gracam，这里要改成真实的标签
+    acts = hook_a.stored[0].cpu()
+    
     mask_filenames = []
     for i, filename in enumerate(filenames):
         hm = acts[i*512:(i+1)*512].mean(0)
