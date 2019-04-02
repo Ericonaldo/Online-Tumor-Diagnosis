@@ -73,6 +73,10 @@
     .font_30 {
         font-size: 30px
     }
+    
+    td {
+        text-align: center
+    }
 </style>
 <div id="app">
     <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
@@ -83,15 +87,23 @@
     <br>
     <br>
     <el-row>
-        <el-col :sapn='12' class="text_center">
-            <form name="input_id" action="/input_id/" method="post" class="text_center">
-                输入id:
-                <input type="text" name="txt_id" class="el-input__inner margin_left" />
-                <input type="submit" value="提交" @click='showimg = true' class="el-button margin_left" />
-            </form>
-        </el-col>
-        <el-col :sapn='12' class="text_center">
-            <p v-if='showimg'><strong class="font_34">{{ pred }}%可能性为恶性肿瘤</strong></p>
+        <el-col :span='24'>
+            <el-row>
+                <el-col :sapn='12' class="text_center">
+                    <div>
+                        <form name="input_id" action="/input_id/" method="post" class="text_center">
+                            输入id:
+                            <input type="text" name="txt_id" class="el-input__inner margin_left" />
+                            <input type="submit" value="提交" @click='showimg = true' class="el-button margin_left" />
+                        </form>
+                    </div>
+                </el-col>
+                <el-col :sapn='12' class="text_center">
+                    <div>
+                        <p v-if='showimg'><strong class="font_34">{{ pred }}%可能性为恶性肿瘤</strong></p>
+                    </div>
+                </el-col>
+            </el-row>
         </el-col>
     </el-row>
     <br>
