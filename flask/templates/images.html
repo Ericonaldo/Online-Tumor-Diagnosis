@@ -1,0 +1,13 @@
+<p>肝癌概率为：{{ pred }}</p>
+<table style="width:100%">
+  <tr>
+      <th>CT图</th>
+      <th>热图</th>
+  </tr>
+  {% for filename in filenames %}
+  <tr>
+    <td><img src="static/{{ filename }}.jpg"/></td>
+    <td><img src="static/{{ filename }}_hm.jpg"/></td>
+  </tr>
+  {% endfor %}
+</table>
