@@ -9,13 +9,13 @@
       <el-menu-item index="1"><h2>在线肿瘤诊断系统</h2></el-menu-item>
     </el-menu>
     <el-row class="imgup">
-      <el-col :span='24' class="grid-content bg-purple-light">
+      <el-col :span='24'>
         <el-row>
             <el-col :span="10">
         <div>
           <el-row>
             <el-col :span="12">
-              <el-upload class="upload-demo" action :http-request="customUpload" :limit="1">
+              <el-upload class="upload-demo" action :http-request="customUpload" :limit="1" :show-file-list='false'>
                 <el-button size="small" type="primary">上传DMC</el-button>
               </el-upload>
             </el-col>
@@ -26,7 +26,7 @@
           <el-row>
             <el-col :span="24">
               <img :src="uploadpic.file_path" alt='CT影像' class="CT" v-if="uploadpic.file_path != ''">
-              <img src="../assets/morenpic.jpg" alt='CT影像' class="CT" v-if="uploadpic.file_path == ''">
+              <img src="../assets/default.png" alt='CT影像' class="CT" v-if="uploadpic.file_path == ''">
             </el-col>
           </el-row>
           <el-row>
@@ -95,7 +95,8 @@ export default {
       // 自定义上传
       fileUpload(file).then(response => {
         console.log(response)
-        if(response.data.success == 0){
+        if(response){
+          if(response.data.success == 0){
           this.uploadpic = response.data.data
           this.$message({
             message: response.data.msg,
@@ -107,6 +108,19 @@ export default {
             type: 'warning'
           });
         }
+        }else{
+          this.$message({
+            message: '上传失败',
+            type: 'warning'
+          });
+        }
+      }).then(err =>{
+        if(this.uploadpic.file_path == ''){
+          this.$message({
+            message: '上传失败',
+            type: 'warning'
+          });
+        } 
       })
     },
     handleSelect(key, keyPath) {
