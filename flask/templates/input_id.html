@@ -1,15 +1,63 @@
 <!-- 引入样式 -->
 <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<style>
+    .el-input__inner {
+        -webkit-appearance: none;
+        background-color: #fff;
+        background-image: none;
+        border-radius: 4px;
+        border: 1px solid #dcdfe6;
+        box-sizing: border-box;
+        color: #606266;
+        display: inline-block;
+        font-size: inherit;
+        height: 40px;
+        line-height: 40px;
+        outline: none;
+        padding: 0 15px;
+        transition: border-color .2s cubic-bezier(.645, .045, .355, 1);
+        width: 100px;
+    }
+    
+    .el-input__inner:focus {
+        outline: none;
+        border-color: #409eff;
+    }
+    
+    .el-button {
+        display: inline-block;
+        line-height: 1;
+        white-space: nowrap;
+        cursor: pointer;
+        color: #fff;
+        background-color: #409eff;
+        border-color: #409eff;
+        border: 1px solid #409eff;
+        -webkit-appearance: none;
+        text-align: center;
+        box-sizing: border-box;
+        outline: none;
+        margin: 0;
+        transition: .1s;
+        font-weight: 500;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        padding: 12px 20px;
+        font-size: 14px;
+        border-radius: 4px;
+    }
+</style>
 <div id="app">
-    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+    <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
         <el-menu-item index="1">
             <h2>在线肿瘤诊断系统</h2>
         </el-menu-item>
     </el-menu>
     <form name="input_id" action="/input_id/" method="post">
         输入id:
-        <el-input type="text" name="txt_id"></el-input>
-        <el-input type="submit" value="提交" @click='showimg = true'></el-input>
+        <input type="text" name="txt_id" class="el-input__inner" />
+        <input type="submit" value="提交" @click='showimg = true' class="el-button " />
     </form>
     <div v-if='showimg'>
         <p>肝癌概率为：{{ pred }}</p>
@@ -37,7 +85,14 @@
         el: '#app',
         data() {
             return {
-                showimg: false,
+                showimg: true,
+                activeIndex: '1'
+            }
+        },
+        mounted() {
+            var url = window.location.href
+            if (url == 'http://106.12.11.68:8808/input_id/') {
+                this.showimg = false
             }
         },
     })

@@ -132,6 +132,9 @@ export default {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     }
+  },
+  mounted(){
+    console.log(window.location.href)
   }
 };
 </script>
