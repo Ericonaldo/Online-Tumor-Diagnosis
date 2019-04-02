@@ -1,4 +1,38 @@
-<form name="input_id" action="/input_id/" method="post">
-    输入id: <input type="text" name="txt_id" />
-    <input type="submit" value="提交">
-</form>
+<!-- 引入样式 -->
+<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<div id="app">
+    <form name="input_id" action="/input_id/" method="post">
+        输入id: <input type="text" name="txt_id" />
+        <input type="submit" value="提交" @click='showimg = true'>
+    </form>
+    <div v-if='showimg'>
+        <p>肝癌概率为：{{ pred }}</p>
+        <table style="width:100%">
+            <tr>
+                <th>CT图</th>
+                <th>热图</th>
+            </tr>
+            {% for filename in filenames %}
+            <tr>
+                <td><img src="static/{{ filename }}.jpg" /></td>
+                <td><img src="static/{{ filename }}_hm.jpg" /></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+<!-- import Vue before Element -->
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<!-- 引入组件库 -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                showimg: false,
+            }
+        },
+    })
+</script>

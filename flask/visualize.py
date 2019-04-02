@@ -122,7 +122,7 @@ def plot(_id):
         hm_resized = resize(hm.numpy(), (320, 400))
         hm_resized = (hm_resized - hm_resized.min()) / (hm_resized.max() - hm_resized.min())
         skimage.io.imsave(f'./static/{filename}_hm.jpg', hm_resized, quality=90)
-    return render_template('images.html', filenames=filenames, pred=pred)
+    return render_template('input_id.html', filenames=filenames, pred=pred)
 
 def get_filenames_org(_id):
     return [f'{_id}_{i}' for i in range(21)]
