@@ -160,6 +160,24 @@ def get_result():
     pred = float(pred)
     pred = '%.2f' % pred*100
     return jsonify({'data':{'filenames':filenames,'pred':pred}})
+@app.route('/threshold_heatmap',methods=['POST'])
+def threshold_heatmap(_id, imgs, acts, threshold):
+    _id = request.request.form['_id']
+    imgs = request.request.form['imgs']
+    acts = request.request.form['acts']
+    threshold = request.request.form['threshold']
+    filenames = get_filenames_org(_id)
+    mask_filenames = []
+    for i, filename in enumerate(filenames):
+        hm = acts[i*512:(i+1)*512].mean(0)
+        hm_resized = np.abs(resize(hm.numpy(), (320, 400)))
+        hm_resized = (hm_resized - hm_resized.min()) / (hm_resized.max() - hm_resized.min())
+        hm_resized[hm_resized >= threshold] = 1
+        hm_resized[hm_resized < threshold] = 0
+        mask_filename = f'./static/{filename}_{threshold}_hm.jpg'
+        skimage.io.imsave(mask_filename, imgs[i]*hm_resized, quality=90)
+        mask_filenames.append(mask_filename)
+    return jsonify({'data':{'filenames':mask_filenames}})
 def get_filenames_org(_id):
     return [f'{_id}_{i}' for i in range(21)]
 
